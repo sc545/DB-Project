@@ -1,0 +1,30 @@
+﻿빌드 시작: 2015-12-12 오전 12:00:45
+     1>2 노드의 "D:\DB Project\HugCoffe\HugCoffe\HugCoffe.vcxproj" 프로젝트(Build 대상)입니다.
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yc"stdafx.h" /Fp"Debug\HugCoffe.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt stdafx.cpp
+         stdafx.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\HugCoffe.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt HugCoffe.cpp HugCoffeDoc.cpp HugCoffeFormDlg.cpp HugCoffeView.cpp LoginDlg.cpp MainFrm.cpp
+         MainFrm.cpp
+         LoginDlg.cpp
+         HugCoffeView.cpp
+         HugCoffeFormDlg.cpp
+         HugCoffeDoc.cpp
+         HugCoffe.cpp
+         코드를 생성하고 있습니다...
+       ResourceCompile:
+         C:\Program Files (x86)\Windows Kits\8.0\bin\x86\rc.exe /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /l"0x0412" /IDebug\ /nologo /fo"Debug\HugCoffe.res" HugCoffe.rc 
+       Link:
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\DB Project\HugCoffe\Debug\HugCoffe.exe" /INCREMENTAL /NOLOGO msdasc.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"D:\DB Project\HugCoffe\Debug\HugCoffe.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\DB Project\HugCoffe\Debug\HugCoffe.lib" /MACHINE:X86 Debug\HugCoffe.res
+         Debug\HugCoffe.obj
+         Debug\HugCoffeDoc.obj
+         Debug\HugCoffeFormDlg.obj
+         Debug\HugCoffeView.obj
+         Debug\LoginDlg.obj
+         Debug\MainFrm.obj
+         Debug\stdafx.obj
+         HugCoffe.vcxproj -> D:\DB Project\HugCoffe\Debug\HugCoffe.exe
+     1>"D:\DB Project\HugCoffe\HugCoffe\HugCoffe.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
+
+빌드했습니다.
+
+경과 시간: 00:00:04.55
