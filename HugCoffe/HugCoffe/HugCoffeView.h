@@ -50,6 +50,8 @@ public:
 	CTabCtrl m_tabSelection;
 //	CListBox m_list;
 	CListCtrl m_listCtrl;
+	afx_msg void OnClickedButtonInsert();
+	int m_iCurSel;
 };
 
 #ifndef _DEBUG  // HugCoffeView.cpp의 디버그 버전

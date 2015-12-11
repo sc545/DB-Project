@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="admin.h" />
+    <ClInclude Include="CustomerInsertDlg.h" />
     <ClInclude Include="HugCoffe.h" />
     <ClInclude Include="HugCoffeDoc.h" />
     <ClInclude Include="HugCoffeFormDlg.h" />
@@ -113,8 +114,10 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="tblCustomer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CustomerInsertDlg.cpp" />
     <ClCompile Include="HugCoffe.cpp" />
     <ClCompile Include="HugCoffeDoc.cpp" />
     <ClCompile Include="HugCoffeFormDlg.cpp" />

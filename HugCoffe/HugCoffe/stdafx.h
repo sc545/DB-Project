@@ -40,6 +40,7 @@
 #include <afxoledb.h>
 #include <atlplus.h>
 #include <atldbcli.h>
+#include <afxcontrolbars.h>
 
 
 

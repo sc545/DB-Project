@@ -63,6 +63,7 @@ void CLoginDlg::OnBnClickedOk()
 	}else{
 		AfxMessageBox(_T("데이터베이스 접속 실패!!"));
 	}
+	selectAdmin.CloseAll();
 }
 
 void CLoginDlg::OnBnClickedCancel()
