@@ -12,6 +12,7 @@
 #include "HugCoffeDoc.h"
 #include "HugCoffeView.h"
 #include "CustomerInsertDlg.h"
+#include "tblCustomer.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -45,7 +46,12 @@ void CHugCoffeView::DoDataExchange(CDataExchange* pDX)
 {
 	CFormView::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TAB_SELECTION, m_tabSelection);
-	DDX_Control(pDX, IDC_LIST, m_listCtrl);
+	DDX_Control(pDX, IDC_LIST_CUSTOMER, m_listCustomer);
+	DDX_Control(pDX, IDC_LIST_MENU1, m_listMenu1);
+	DDX_Control(pDX, IDC_LIST_MENU2, m_listMenu2);
+	DDX_Control(pDX, IDC_LIST_ORDER, m_listOrder);
+	DDX_Control(pDX, IDC_LIST_GOODS, m_listGoods);
+	DDX_Control(pDX, IDC_LIST_SALES, m_listSales);
 }
 
 BOOL CHugCoffeView::PreCreateWindow(CREATESTRUCT& cs)
@@ -73,7 +79,7 @@ void CHugCoffeView::OnInitialUpdate()
 	}
 
 	LV_COLUMN lvColumn;
-	LPWSTR list[4] = {_T("고객번호"), _T("이름"), _T("전화번호"), _T("포인트")};
+	LPWSTR list[6] = {_T("고객번호"), _T("이름"), _T("전화번호"), _T("포인트")};
 	int nWidth[4] = {100, 100, 150, 100};
 
 	for(int i=0; i<4; i++){
@@ -82,12 +88,92 @@ void CHugCoffeView::OnInitialUpdate()
 		lvColumn.pszText = list[i];
 		lvColumn.iSubItem = i;
 		lvColumn.cx = nWidth[i];
-		m_listCtrl.InsertColumn(i, &lvColumn);
+		m_listCustomer.InsertColumn(i, &lvColumn);
 	}
 
-	m_listCtrl.SetExtendedStyle(m_listCtrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	m_listCustomer.SetExtendedStyle(m_listCustomer.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
-	
+	LV_COLUMN lvColumn1;
+	LPWSTR list1[5] = {_T("음료번호"), _T("음료이름"), _T("음료가격"), _T("사이즈"), _T("Hot & Ice")};
+	int nWidth1[5] = {100, 100, 150, 100, 100};
+
+	for(int i=0; i<5; i++){
+		lvColumn1.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+		lvColumn1.fmt = LVCFMT_CENTER;
+		lvColumn1.pszText = list1[i];
+		lvColumn1.iSubItem = i;
+		lvColumn1.cx = nWidth1[i];
+		m_listMenu1.InsertColumn(i, &lvColumn1);
+	}
+
+	m_listMenu1.SetExtendedStyle(m_listMenu1.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+
+	LV_COLUMN lvColumn2;
+	LPWSTR list2[3] = {_T("사이드번호"), _T("사이드이름"), _T("사이드가격")};
+	int nWidth2[3] = {100, 100, 150};
+
+	for(int i=0; i<3; i++){
+		lvColumn2.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+		lvColumn2.fmt = LVCFMT_CENTER;
+		lvColumn2.pszText = list2[i];
+		lvColumn2.iSubItem = i;
+		lvColumn2.cx = nWidth2[i];
+		m_listMenu2.InsertColumn(i, &lvColumn1);
+	}
+
+	m_listMenu2.SetExtendedStyle(m_listMenu1.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+
+	LV_COLUMN lvColumn3;
+	LPWSTR list3[6] = {_T("주문번호"), _T("음료"), _T("사이드"), _T("주문날짜"), _T("총주문액"), _T("고객번호")};
+	int nWidth3[6] = {100, 100, 150, 100, 100, 100};
+
+	for(int i=0; i<6; i++){
+		lvColumn3.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+		lvColumn3.fmt = LVCFMT_CENTER;
+		lvColumn3.pszText = list3[i];
+		lvColumn3.iSubItem = i;
+		lvColumn3.cx = nWidth3[i];
+		m_listOrder.InsertColumn(i, &lvColumn3);
+	}
+
+	m_listOrder.SetExtendedStyle(m_listOrder.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+
+	LV_COLUMN lvColumn4;
+	LPWSTR list4[2] = {_T("물품번호"), _T("수량")};
+	int nWidth4[2] = {100, 100};
+
+	for(int i=0; i<2; i++){
+		lvColumn4.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+		lvColumn4.fmt = LVCFMT_CENTER;
+		lvColumn4.pszText = list4[i];
+		lvColumn4.iSubItem = i;
+		lvColumn4.cx = nWidth4[i];
+		m_listGoods.InsertColumn(i, &lvColumn4);
+	}
+
+	m_listGoods.SetExtendedStyle(m_listGoods.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+
+	LV_COLUMN lvColumn5;
+	LPWSTR list5[2] = {_T("날짜"), _T("총매출액")};
+	int nWidth5[2] = {100, 100};
+
+	for(int i=0; i<2; i++){
+		lvColumn5.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
+		lvColumn5.fmt = LVCFMT_CENTER;
+		lvColumn5.pszText = list5[i];
+		lvColumn5.iSubItem = i;
+		lvColumn5.cx = nWidth5[i];
+		m_listSales.InsertColumn(i, &lvColumn5);
+	}
+
+	m_listSales.SetExtendedStyle(m_listSales.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+
+	m_listCustomer.ShowWindow(TRUE);
+	m_listMenu1.ShowWindow(FALSE);
+	m_listMenu2.ShowWindow(FALSE);
+	m_listOrder.ShowWindow(FALSE);
+	m_listGoods.ShowWindow(FALSE);
+	m_listSales.ShowWindow(FALSE);
 }
 
 
@@ -119,81 +205,110 @@ void CHugCoffeView::OnTcnSelchangeTab3(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	*pResult = 0;
-	
-	
+	CtblCustomer<CtblCustomerSelectAccessor> selectCustomer;
+	LVITEM lvItem;
+	CString strCount;
 
 	m_iCurSel = m_tabSelection.GetCurSel();
-	//LV_COLUMN lvColumn;
-	//LPWSTR list[6];
-	//int lastColumn = 0;
-	//int nWidth[6];
-	//switch (nSelection){
-	//case 0:
-	//	//GetDlgItem(IDC_BUTTON_CUS
-	//	GetDlgItem(IDC_BUTTON_INSERT)->SetWindowText(_T("고객등록"));
-	//	GetDlgItem(IDC_BUTTON_MODIFY)->SetWindowText(_T("고객수정"));
-	//	GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(_T("고객삭제"));
-	//	GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("고객검색"));
-	//	list[0] = _T("고객번호");list[1] = _T("이름");list[2] = _T("전화번호");list[3] = _T("포인트");
-	//	lastColumn=4;
-	//	nWidth[0] = 100;nWidth[1] = 100;nWidth[2] = 150;nWidth[3] = 100;
-	//	break;
-	//case 1:
-	//	GetDlgItem(IDC_BUTTON_INSERT)->SetWindowText(_T("메뉴등록"));
-	//	GetDlgItem(IDC_BUTTON_MODIFY)->SetWindowText(_T("메뉴수정"));
-	//	GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(_T("메뉴삭제"));
-	//	GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("메뉴검색"));
-	//	list[0] = _T("메뉴번호");list[1] = _T("이름");list[2] = _T("가격");list[3] = _T("사이즈");list[4] = _T("Hot & Ice");
-	//	lastColumn=5;
-	//	nWidth[0] = 100;nWidth[1] = 100;nWidth[2] = 150;nWidth[3] = 100;nWidth[4] = 100;
-	//	break;
-	//case 2:
-	//	GetDlgItem(IDC_BUTTON_INSERT)->SetWindowText(_T("주문등록"));
-	//	GetDlgItem(IDC_BUTTON_MODIFY)->SetWindowText(_T("주문수정"));
-	//	GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(_T("주문삭제"));
-	//	GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("주문검색"));
-	//	list[0] = _T("주문번호");list[1] = _T("음료");list[2] = _T("사이드");list[3] = _T("주문날짜");list[4] = _T("총주문액");list[5] = _T("고객번호");
-	//	lastColumn=6;
-	//	nWidth[0] = 100;nWidth[1] = 100;nWidth[2] = 150;nWidth[3] = 100;nWidth[4] = 100;nWidth[5] = 100;
-	//	break;
-	//case 3:
-	//	GetDlgItem(IDC_BUTTON_INSERT)->SetWindowText(_T("물품등록"));
-	//	GetDlgItem(IDC_BUTTON_MODIFY)->SetWindowText(_T("물품수정"));
-	//	GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(_T("물품삭제"));
-	//	GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("물품검색"));
-	//	list[0] = _T("물품번호");list[1] = _T("수량");
-	//	lastColumn=2;
-	//	nWidth[0] = 100;nWidth[1] = 100;
-	//	break;
-	//case 4:
-	//	GetDlgItem(IDC_BUTTON_INSERT)->SetWindowText(_T("매출등록"));
-	//	GetDlgItem(IDC_BUTTON_MODIFY)->SetWindowText(_T("매출수정"));
-	//	GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(_T("매출삭제"));
-	//	GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("매출검색"));
-	//	list[0] = _T("날짜");list[1] = _T("총매출액");
-	//	lastColumn=2;
-	//	nWidth[0] = 100;nWidth[1] = 100;
-	//	break;
-	//}
-	//
-	//
-	//
+	switch (m_iCurSel){
+	case 0:
+		m_listCustomer.ShowWindow(TRUE);
+		m_listMenu1.ShowWindow(FALSE);
+		m_listMenu2.ShowWindow(FALSE);
+		m_listOrder.ShowWindow(FALSE);
+		m_listGoods.ShowWindow(FALSE);
+		m_listSales.ShowWindow(FALSE);
+		GetDlgItem(IDC_BUTTON_INSERT)->SetWindowText(_T("고객등록"));
+		GetDlgItem(IDC_BUTTON_MODIFY)->SetWindowText(_T("고객수정"));
+		GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(_T("고객삭제"));
+		GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("고객검색"));
+		
+		if(selectCustomer.OpenAll() == S_OK){
+			while(selectCustomer.MoveNext() == S_OK){
+				lvItem.mask = LVIF_TEXT;
+				lvItem.iItem = selectCustomer.m_cus_id;
+				lvItem.iSubItem = 0;
+				strCount.Format(_T("%d"), selectCustomer.m_cus_id);
+				lvItem.pszText = (LPWSTR)(LPCTSTR)strCount;
+				m_listCustomer.InsertItem(&lvItem);
+				
+				lvItem.mask = LVIF_TEXT;
+				lvItem.iItem = selectCustomer.m_cus_id;
+				lvItem.iSubItem = 1;
+				strCount.Format(_T("%d"), 10);
+				lvItem.pszText = (LPWSTR)(LPCTSTR)selectCustomer.m_cus_name;
+				m_listCustomer.SetItem(&lvItem);
 
-	//for(int i=0; i<lastColumn; i++){
-	//	lvColumn.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
-	//	lvColumn.fmt = LVCFMT_CENTER;
-	//	lvColumn.pszText = list[i];
-	//	lvColumn.iSubItem = i;
-	//	lvColumn.cx = nWidth[i];
-	//	m_listCtrl.DeleteColumn(i);
-	//	m_listCtrl.InsertColumn(i, &lvColumn);
-	//	if(i == lastColumn-1)
-	//		for(int j=lastColumn; j<6; j++)
-	//			m_listCtrl.DeleteColumn(j);
-	//}
-	//
+				lvItem.mask = LVIF_TEXT;
+				lvItem.iItem = selectCustomer.m_cus_id;
+				lvItem.iSubItem = 2;
+				lvItem.pszText = (LPWSTR)(LPCTSTR)selectCustomer.m_cus_phone;
+				m_listCustomer.SetItem(&lvItem);
 
-	//m_listCtrl.SetExtendedStyle(m_listCtrl.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+				lvItem.mask = LVIF_TEXT;
+				lvItem.iItem = selectCustomer.m_cus_id;
+				lvItem.iSubItem = 3;
+				lvItem.pszText = (LPWSTR)(LPCTSTR)selectCustomer.m_cus_point;
+				m_listCustomer.SetItem(&lvItem);
+
+				UpdateData(FALSE);
+
+			}
+		}else{
+			AfxMessageBox(_T("데이터베이스 접속 실패!!"));
+		}
+		
+		break;
+	case 1:
+		m_listCustomer.ShowWindow(FALSE);
+		m_listMenu1.ShowWindow(TRUE);
+		m_listMenu2.ShowWindow(TRUE);
+		m_listOrder.ShowWindow(FALSE);
+		m_listGoods.ShowWindow(FALSE);
+		m_listSales.ShowWindow(FALSE);
+		GetDlgItem(IDC_BUTTON_INSERT)->SetWindowText(_T("메뉴등록"));
+		GetDlgItem(IDC_BUTTON_MODIFY)->SetWindowText(_T("메뉴수정"));
+		GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(_T("메뉴삭제"));
+		GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("메뉴검색"));
+		break;
+	case 2:
+		m_listCustomer.ShowWindow(FALSE);
+		m_listMenu1.ShowWindow(FALSE);
+		m_listMenu2.ShowWindow(FALSE);
+		m_listOrder.ShowWindow(TRUE);
+		m_listGoods.ShowWindow(FALSE);
+		m_listSales.ShowWindow(FALSE);
+		GetDlgItem(IDC_BUTTON_INSERT)->SetWindowText(_T("주문등록"));
+		GetDlgItem(IDC_BUTTON_MODIFY)->SetWindowText(_T("주문수정"));
+		GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(_T("주문삭제"));
+		GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("주문검색"));
+		break;
+	case 3:
+		m_listCustomer.ShowWindow(FALSE);
+		m_listMenu1.ShowWindow(FALSE);
+		m_listMenu2.ShowWindow(FALSE);
+		m_listOrder.ShowWindow(FALSE);
+		m_listGoods.ShowWindow(TRUE);
+		m_listSales.ShowWindow(FALSE);
+		GetDlgItem(IDC_BUTTON_INSERT)->SetWindowText(_T("물품등록"));
+		GetDlgItem(IDC_BUTTON_MODIFY)->SetWindowText(_T("물품수정"));
+		GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(_T("물품삭제"));
+		GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("물품검색"));
+		break;
+	case 4:
+		m_listCustomer.ShowWindow(FALSE);
+		m_listMenu1.ShowWindow(FALSE);
+		m_listMenu2.ShowWindow(FALSE);
+		m_listOrder.ShowWindow(FALSE);
+		m_listGoods.ShowWindow(FALSE);
+		m_listSales.ShowWindow(TRUE);
+		GetDlgItem(IDC_BUTTON_INSERT)->SetWindowText(_T("매출등록"));
+		GetDlgItem(IDC_BUTTON_MODIFY)->SetWindowText(_T("매출수정"));
+		GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(_T("매출삭제"));
+		GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("매출검색"));
+		break;
+	}	
+
 }
 
 

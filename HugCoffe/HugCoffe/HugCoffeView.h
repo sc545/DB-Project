@@ -49,9 +49,14 @@ public:
 	afx_msg void OnTcnSelchangeTab3(NMHDR *pNMHDR, LRESULT *pResult);
 	CTabCtrl m_tabSelection;
 //	CListBox m_list;
-	CListCtrl m_listCtrl;
+	CListCtrl m_listCustomer;
 	afx_msg void OnClickedButtonInsert();
 	int m_iCurSel;
+	CListCtrl m_listMenu1;
+	CListCtrl m_listMenu2;
+	CListCtrl m_listOrder;
+	CListCtrl m_listGoods;
+	CListCtrl m_listSales;
 };
 
 #ifndef _DEBUG  // HugCoffeView.cpp의 디버그 버전

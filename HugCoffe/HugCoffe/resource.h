@@ -27,8 +27,14 @@
 #define IDC_BUTTON8                     1012
 #define IDC_BUTTON_SELECT               1012
 #define IDC_LIST                        1014
+#define IDC_LIST_ORDER                  1014
 #define ID_BUTTON_CUSTOMER_INSERT       1015
 #define ID_BUTTON_CUSTOMER_INSERT_CANCEL 1016
+#define IDC_LIST_MENU2                  1016
+#define IDC_LIST_MENU1                  1017
+#define IDC_LIST_CUSTOMER               1018
+#define IDC_LIST_GOODS                  1019
+#define IDC_LIST_SALES                  1020
 
 // Next default values for new objects
 // 
@@ -36,7 +42,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        312
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1017
+#define _APS_NEXT_CONTROL_VALUE         1020
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

@@ -46,22 +46,28 @@ void CLoginDlg::OnBnClickedOk()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
 	Cadmin<CadminSelectAccessor> selectAdmin;
-	if(selectAdmin.OpenAll() == S_OK){
-		if(selectAdmin.MoveFirst() == S_OK){
-			if(selectAdmin.m_id == m_strId){
-				if(selectAdmin.m_pass == m_strPass){
-					EndDialog(1);
+	if(m_strId.GetLength() < 1){
+		AfxMessageBox(_T("아이디를 입력해주세요!!"));
+	}else if(m_strPass.GetLength() < 1){
+		AfxMessageBox(_T("비밀번호를 입력해주세요!!"));
+	}else {
+		if(selectAdmin.OpenAll() == S_OK){
+			if(selectAdmin.MoveFirst() == S_OK){
+				if(selectAdmin.m_id == m_strId){
+					if(selectAdmin.m_pass == m_strPass){
+						EndDialog(1);
+					}else{
+						AfxMessageBox(_T("비밀번호가 틀립니다!!"));
+					}
 				}else{
-					AfxMessageBox(_T("비밀번호가 틀립니다!!"));
+					AfxMessageBox(_T("존재하지 않는 아이디입니다!!"));
 				}
 			}else{
-				AfxMessageBox(_T("존재하지 않는 아이디입니다!!"));
+				AfxMessageBox(_T("쿼리 결과가 없습니다!!"));
 			}
 		}else{
-			AfxMessageBox(_T("쿼리 결과가 없습니다!!"));
+			AfxMessageBox(_T("데이터베이스 접속 실패!!"));
 		}
-	}else{
-		AfxMessageBox(_T("데이터베이스 접속 실패!!"));
 	}
 	selectAdmin.CloseAll();
 }
