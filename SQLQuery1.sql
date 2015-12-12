@@ -77,3 +77,16 @@ goods_num int not null
 
 
 select * from tblCustomer;
+
+select * from tblBeverage;
+select * from tblSide;
+
+delete from tblCustomer
+
+insert into tblCustomer
+(cus_name, cus_phone)
+values
+('123', '123');
+
+
+UPDATE dbo.tblCustomer SET cus_name = 1, cus_phone = 1 WHERE cus_id = 31

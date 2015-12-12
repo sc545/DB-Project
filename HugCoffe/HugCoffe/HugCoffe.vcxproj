@@ -105,6 +105,7 @@
   <ItemGroup>
     <ClInclude Include="admin.h" />
     <ClInclude Include="CustomerInsertDlg.h" />
+    <ClInclude Include="CustomerModifyDlg.h" />
     <ClInclude Include="HugCoffe.h" />
     <ClInclude Include="HugCoffeDoc.h" />
     <ClInclude Include="HugCoffeFormDlg.h" />
@@ -118,6 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CustomerInsertDlg.cpp" />
+    <ClCompile Include="CustomerModifyDlg.cpp" />
     <ClCompile Include="HugCoffe.cpp" />
     <ClCompile Include="HugCoffeDoc.cpp" />
     <ClCompile Include="HugCoffeFormDlg.cpp" />

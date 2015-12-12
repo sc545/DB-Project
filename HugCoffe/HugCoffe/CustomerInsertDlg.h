@@ -19,8 +19,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnClickedButtonCustomerInsert();
+	afx_msg void OnClickedButtonCustomerOk();
 	CString m_strCusName;
 	CString m_strCusPhone;
-	afx_msg void OnClickedButtonCustomerInsertCancel();
+	afx_msg void OnClickedButtonCustomerCancel();
 };

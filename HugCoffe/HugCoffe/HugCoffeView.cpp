@@ -13,6 +13,7 @@
 #include "HugCoffeView.h"
 #include "CustomerInsertDlg.h"
 #include "tblCustomer.h"
+#include "CustomerModifyDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -26,6 +27,8 @@ IMPLEMENT_DYNCREATE(CHugCoffeView, CFormView)
 BEGIN_MESSAGE_MAP(CHugCoffeView, CFormView)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_SELECTION, &CHugCoffeView::OnTcnSelchangeTab3)
 	ON_BN_CLICKED(IDC_BUTTON_INSERT, &CHugCoffeView::OnClickedButtonInsert)
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_CUSTOMER, &CHugCoffeView::OnItemchangedListCustomer)
+	ON_BN_CLICKED(IDC_BUTTON_MODIFY, &CHugCoffeView::OnClickedButtonModify)
 END_MESSAGE_MAP()
 
 // CHugCoffeView 생성/소멸
@@ -33,6 +36,10 @@ END_MESSAGE_MAP()
 CHugCoffeView::CHugCoffeView()
 	: CFormView(CHugCoffeView::IDD)
 	, m_iCurSel(0)
+	, m_nSelectedItem(0)
+	, m_strCusName(_T(""))
+	, m_strCusPhone(_T(""))
+	, m_lCusId(0)
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
 
@@ -167,6 +174,7 @@ void CHugCoffeView::OnInitialUpdate()
 	}
 
 	m_listSales.SetExtendedStyle(m_listSales.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
+	
 
 	m_listCustomer.ShowWindow(TRUE);
 	m_listMenu1.ShowWindow(FALSE);
@@ -174,6 +182,9 @@ void CHugCoffeView::OnInitialUpdate()
 	m_listOrder.ShowWindow(FALSE);
 	m_listGoods.ShowWindow(FALSE);
 	m_listSales.ShowWindow(FALSE);
+	
+	OnInitialUpdateList();
+	
 }
 
 
@@ -205,11 +216,8 @@ void CHugCoffeView::OnTcnSelchangeTab3(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	*pResult = 0;
-	CtblCustomer<CtblCustomerSelectAccessor> selectCustomer;
-	LVITEM lvItem;
-	CString strCount;
-
 	m_iCurSel = m_tabSelection.GetCurSel();
+	
 	switch (m_iCurSel){
 	case 0:
 		m_listCustomer.ShowWindow(TRUE);
@@ -223,40 +231,8 @@ void CHugCoffeView::OnTcnSelchangeTab3(NMHDR *pNMHDR, LRESULT *pResult)
 		GetDlgItem(IDC_BUTTON_DELETE)->SetWindowText(_T("고객삭제"));
 		GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("고객검색"));
 		
-		if(selectCustomer.OpenAll() == S_OK){
-			while(selectCustomer.MoveNext() == S_OK){
-				lvItem.mask = LVIF_TEXT;
-				lvItem.iItem = selectCustomer.m_cus_id;
-				lvItem.iSubItem = 0;
-				strCount.Format(_T("%d"), selectCustomer.m_cus_id);
-				lvItem.pszText = (LPWSTR)(LPCTSTR)strCount;
-				m_listCustomer.InsertItem(&lvItem);
-				
-				lvItem.mask = LVIF_TEXT;
-				lvItem.iItem = selectCustomer.m_cus_id;
-				lvItem.iSubItem = 1;
-				strCount.Format(_T("%d"), 10);
-				lvItem.pszText = (LPWSTR)(LPCTSTR)selectCustomer.m_cus_name;
-				m_listCustomer.SetItem(&lvItem);
-
-				lvItem.mask = LVIF_TEXT;
-				lvItem.iItem = selectCustomer.m_cus_id;
-				lvItem.iSubItem = 2;
-				lvItem.pszText = (LPWSTR)(LPCTSTR)selectCustomer.m_cus_phone;
-				m_listCustomer.SetItem(&lvItem);
-
-				lvItem.mask = LVIF_TEXT;
-				lvItem.iItem = selectCustomer.m_cus_id;
-				lvItem.iSubItem = 3;
-				lvItem.pszText = (LPWSTR)(LPCTSTR)selectCustomer.m_cus_point;
-				m_listCustomer.SetItem(&lvItem);
-
-				UpdateData(FALSE);
-
-			}
-		}else{
-			AfxMessageBox(_T("데이터베이스 접속 실패!!"));
-		}
+		m_listCustomer.DeleteAllItems();
+		OnInitialUpdateList();
 		
 		break;
 	case 1:
@@ -317,6 +293,86 @@ void CHugCoffeView::OnClickedButtonInsert()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	if(m_iCurSel == 0){
 		CCustomerInsertDlg CCustomerInsertDlg;
-		CCustomerInsertDlg.DoModal();
+		if(CCustomerInsertDlg.DoModal() == 1){
+			m_listCustomer.DeleteAllItems();
+			OnInitialUpdateList();
+		}
 	}
 }
+
+
+void CHugCoffeView::OnInitialUpdateList(void)
+{
+	CtblCustomer<CtblCustomerSelectAccessor> selectCustomer;
+	int nCount;
+	LV_ITEM lvItem;
+	CString strCount;
+
+	if(selectCustomer.OpenAll() == S_OK){
+		while(selectCustomer.MoveNext() == S_OK){
+			nCount = m_listCustomer.GetItemCount();
+			lvItem.mask = LVIF_TEXT;
+			lvItem.iItem = nCount;
+			strCount.Format(_T("%d"), selectCustomer.m_cus_id);
+			lvItem.iSubItem = 0;
+			strCount.Format(_T("%d"), selectCustomer.m_cus_id);
+			lvItem.pszText = (LPWSTR)(LPCTSTR)strCount;
+			m_listCustomer.InsertItem(&lvItem);
+				
+			lvItem.mask = LVIF_TEXT;
+			lvItem.iItem = nCount;
+			lvItem.iSubItem = 1;
+			lvItem.pszText = (LPWSTR)(LPCTSTR)selectCustomer.m_cus_name;
+			m_listCustomer.SetItem(&lvItem);
+
+			lvItem.mask = LVIF_TEXT;
+			lvItem.iItem = nCount;
+			lvItem.iSubItem = 2;
+			lvItem.pszText = (LPWSTR)(LPCTSTR)selectCustomer.m_cus_phone;
+			m_listCustomer.SetItem(&lvItem);
+
+			lvItem.mask = LVIF_TEXT;				
+			lvItem.iItem = nCount;
+			lvItem.iSubItem = 3;
+			strCount.Format(_T("%d"), selectCustomer.m_cus_point);
+			lvItem.pszText = (LPWSTR)(LPCTSTR)strCount;
+			m_listCustomer.SetItem(&lvItem);
+		}
+	}else{
+		AfxMessageBox(_T("데이터베이스 접속 실패!!"));
+	}
+}
+
+
+void CHugCoffeView::OnItemchangedListCustomer(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+	//@TN
+		*pResult = 0;
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_nSelectedItem = pNMLV->iItem;
+	
+	m_lCusId = _wtol(m_listCustomer.GetItemText(m_nSelectedItem, 0));
+	m_strCusName = m_listCustomer.GetItemText(m_nSelectedItem, 1);
+	m_strCusPhone = m_listCustomer.GetItemText(m_nSelectedItem, 2);
+	*pResult = 0;
+}
+
+
+void CHugCoffeView::OnClickedButtonModify()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	if(m_iCurSel == 0){
+		CCustomerModifyDlg CCustomerModifyDlg(NULL, m_strCusName, m_strCusPhone, m_lCusId);
+		CString str;
+		str.Format(_T("%ld"), m_lCusId);
+		AfxMessageBox(str);
+		if(CCustomerModifyDlg.DoModal() == 1){
+			m_listCustomer.DeleteAllItems();
+			OnInitialUpdateList();
+		}
+	}
+	
+
+}
+

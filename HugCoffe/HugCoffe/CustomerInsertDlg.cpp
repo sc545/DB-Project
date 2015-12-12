@@ -27,27 +27,27 @@ CCustomerInsertDlg::~CCustomerInsertDlg()
 void CCustomerInsertDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_EDIT_CUSTOMER_INSERT_NAME, m_strCusName);
-	DDX_Text(pDX, IDC_EDIT_CUSTOMER_INSERT_PHONE, m_strCusPhone);
+	DDX_Text(pDX, IDC_EDIT_CUSTOMER_NAME, m_strCusName);
+	DDX_Text(pDX, IDC_EDIT_CUSTOMER_PHONE, m_strCusPhone);
 }
 
 
 BEGIN_MESSAGE_MAP(CCustomerInsertDlg, CDialogEx)
-	ON_BN_CLICKED(ID_BUTTON_CUSTOMER_INSERT, &CCustomerInsertDlg::OnClickedButtonCustomerInsert)
-	ON_BN_CLICKED(ID_BUTTON_CUSTOMER_INSERT_CANCEL, &CCustomerInsertDlg::OnClickedButtonCustomerInsertCancel)
+	ON_BN_CLICKED(ID_BUTTON_CUSTOMER_OK, &CCustomerInsertDlg::OnClickedButtonCustomerOk)
+	ON_BN_CLICKED(ID_BUTTON_CUSTOMER_CANCEL, &CCustomerInsertDlg::OnClickedButtonCustomerCancel)
 END_MESSAGE_MAP()
 
 
 // CCustomerInsertDlg 메시지 처리기입니다.
 
 
-void CCustomerInsertDlg::OnClickedButtonCustomerInsert()
+void CCustomerInsertDlg::OnClickedButtonCustomerOk()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
 	CtblCustomer<CtblCustomerInsertAccessor> insertCustomer;
-	if(m_strCusName.GetLength()>3){
-		AfxMessageBox(_T("3을 초과했습니다!!"));
+	if(m_strCusName.GetLength()>21){
+		AfxMessageBox(_T("이름이 너무 깁니다!!"));
 	}else if(m_strCusName.GetLength()<1){
 		AfxMessageBox(_T("이름을 입력해주세요!!"));
 	}else if(m_strCusPhone.GetLength()>13){
@@ -55,12 +55,12 @@ void CCustomerInsertDlg::OnClickedButtonCustomerInsert()
 	}else if(m_strCusPhone.GetLength()<1){
 		AfxMessageBox(_T("핸드폰번호를 입력해주세요!!"));
 	}else{
-		wcscpy_s((wchar_t*)insertCustomer.m_cus_name, sizeof((const wchar_t*)m_strCusName), (const wchar_t*)m_strCusName);
-		insertCustomer.m_dwcus_nameLength = wcslen((const wchar_t*)m_strCusName)*2;
+		wcscpy_s((wchar_t*)insertCustomer.m_cus_name, 20, (const wchar_t*)m_strCusName.GetBuffer(m_strCusName.GetLength()));
+		insertCustomer.m_dwcus_nameLength = wcslen((const wchar_t*)m_strCusName.GetBuffer(m_strCusName.GetLength()))*2;
 		insertCustomer.m_dwcus_nameStatus = DBSTATUS_S_OK;
 
-		wcscpy_s((wchar_t*)insertCustomer.m_cus_phone, sizeof((const wchar_t*)m_strCusPhone), (const wchar_t*)m_strCusPhone);
-		insertCustomer.m_dwcus_phoneLength = wcslen((const wchar_t*)m_strCusPhone)*2;
+		wcscpy_s((wchar_t*)insertCustomer.m_cus_phone, 13, (const wchar_t*)m_strCusPhone.GetBuffer(m_strCusPhone.GetLength()));
+		insertCustomer.m_dwcus_phoneLength = wcslen((const wchar_t*)m_strCusPhone.GetBuffer(m_strCusPhone.GetLength()))*2;
 		insertCustomer.m_dwcus_phoneStatus = DBSTATUS_S_OK;
 
 		if(insertCustomer.OpenAll() == S_OK){
@@ -71,11 +71,13 @@ void CCustomerInsertDlg::OnClickedButtonCustomerInsert()
 		}
 	}
 	insertCustomer.CloseAll();
+	
+
 }
 
 
-void CCustomerInsertDlg::OnClickedButtonCustomerInsertCancel()
+void CCustomerInsertDlg::OnClickedButtonCustomerCancel()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	EndDialog(1);
+	EndDialog(0);
 }

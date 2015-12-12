@@ -48,7 +48,6 @@ protected:
 public:
 	afx_msg void OnTcnSelchangeTab3(NMHDR *pNMHDR, LRESULT *pResult);
 	CTabCtrl m_tabSelection;
-//	CListBox m_list;
 	CListCtrl m_listCustomer;
 	afx_msg void OnClickedButtonInsert();
 	int m_iCurSel;
@@ -57,6 +56,13 @@ public:
 	CListCtrl m_listOrder;
 	CListCtrl m_listGoods;
 	CListCtrl m_listSales;
+	void OnInitialUpdateList(void);
+	int m_nSelectedItem;
+	afx_msg void OnItemchangedListCustomer(NMHDR *pNMHDR, LRESULT *pResult);
+	CString m_strCusName;
+	CString m_strCusPhone;
+	afx_msg void OnClickedButtonModify();
+	LONG m_lCusId;
 };
 
 #ifndef _DEBUG  // HugCoffeView.cpp의 디버그 버전
