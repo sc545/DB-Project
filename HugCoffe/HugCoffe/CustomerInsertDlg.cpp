@@ -24,11 +24,22 @@ CCustomerInsertDlg::~CCustomerInsertDlg()
 {
 }
 
+BOOL CCustomerInsertDlg::OnInitDialog(){
+	CDialog::OnInitDialog();
+
+	// 다이얼로그 초기화 코드 작성
+
+	m_editCusPhone.SetLimitText(11);
+
+	return TRUE;
+}
+
 void CCustomerInsertDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_EDIT_CUSTOMER_NAME, m_strCusName);
 	DDX_Text(pDX, IDC_EDIT_CUSTOMER_PHONE, m_strCusPhone);
+	DDX_Control(pDX, IDC_EDIT_CUSTOMER_PHONE, m_editCusPhone);
 }
 
 

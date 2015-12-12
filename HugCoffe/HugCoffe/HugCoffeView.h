@@ -63,6 +63,8 @@ public:
 	CString m_strCusPhone;
 	afx_msg void OnClickedButtonModify();
 	LONG m_lCusId;
+	afx_msg void OnClickedButtonDelete();
+	afx_msg void OnClickedButtonSelect();
 };
 
 #ifndef _DEBUG  // HugCoffeView.cpp의 디버그 버전

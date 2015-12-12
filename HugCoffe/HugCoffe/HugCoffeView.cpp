@@ -14,6 +14,7 @@
 #include "CustomerInsertDlg.h"
 #include "tblCustomer.h"
 #include "CustomerModifyDlg.h"
+#include "CustomerSelectDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -29,6 +30,8 @@ BEGIN_MESSAGE_MAP(CHugCoffeView, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON_INSERT, &CHugCoffeView::OnClickedButtonInsert)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_CUSTOMER, &CHugCoffeView::OnItemchangedListCustomer)
 	ON_BN_CLICKED(IDC_BUTTON_MODIFY, &CHugCoffeView::OnClickedButtonModify)
+	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CHugCoffeView::OnClickedButtonDelete)
+	ON_BN_CLICKED(IDC_BUTTON_SELECT, &CHugCoffeView::OnClickedButtonSelect)
 END_MESSAGE_MAP()
 
 // CHugCoffeView 생성/소멸
@@ -125,7 +128,7 @@ void CHugCoffeView::OnInitialUpdate()
 		lvColumn2.pszText = list2[i];
 		lvColumn2.iSubItem = i;
 		lvColumn2.cx = nWidth2[i];
-		m_listMenu2.InsertColumn(i, &lvColumn1);
+		m_listMenu2.InsertColumn(i, &lvColumn2);
 	}
 
 	m_listMenu2.SetExtendedStyle(m_listMenu1.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
@@ -182,6 +185,9 @@ void CHugCoffeView::OnInitialUpdate()
 	m_listOrder.ShowWindow(FALSE);
 	m_listGoods.ShowWindow(FALSE);
 	m_listSales.ShowWindow(FALSE);
+
+	((CButton*)GetDlgItem(IDC_BUTTON_MODIFY))->EnableWindow(FALSE);
+	((CButton*)GetDlgItem(IDC_BUTTON_DELETE))->EnableWindow(FALSE);
 	
 	OnInitialUpdateList();
 	
@@ -291,10 +297,13 @@ void CHugCoffeView::OnTcnSelchangeTab3(NMHDR *pNMHDR, LRESULT *pResult)
 void CHugCoffeView::OnClickedButtonInsert()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	((CButton*)GetDlgItem(IDC_BUTTON_MODIFY))->EnableWindow(FALSE);
+	((CButton*)GetDlgItem(IDC_BUTTON_DELETE))->EnableWindow(FALSE);
+
 	if(m_iCurSel == 0){
 		CCustomerInsertDlg CCustomerInsertDlg;
 		if(CCustomerInsertDlg.DoModal() == 1){
-			m_listCustomer.DeleteAllItems();
 			OnInitialUpdateList();
 		}
 	}
@@ -303,6 +312,7 @@ void CHugCoffeView::OnClickedButtonInsert()
 
 void CHugCoffeView::OnInitialUpdateList(void)
 {
+	m_listCustomer.DeleteAllItems();
 	CtblCustomer<CtblCustomerSelectAccessor> selectCustomer;
 	int nCount;
 	LV_ITEM lvItem;
@@ -313,7 +323,6 @@ void CHugCoffeView::OnInitialUpdateList(void)
 			nCount = m_listCustomer.GetItemCount();
 			lvItem.mask = LVIF_TEXT;
 			lvItem.iItem = nCount;
-			strCount.Format(_T("%d"), selectCustomer.m_cus_id);
 			lvItem.iSubItem = 0;
 			strCount.Format(_T("%d"), selectCustomer.m_cus_id);
 			lvItem.pszText = (LPWSTR)(LPCTSTR)strCount;
@@ -351,10 +360,14 @@ void CHugCoffeView::OnItemchangedListCustomer(NMHDR *pNMHDR, LRESULT *pResult)
 		*pResult = 0;
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	m_nSelectedItem = pNMLV->iItem;
-	
+
 	m_lCusId = _wtol(m_listCustomer.GetItemText(m_nSelectedItem, 0));
 	m_strCusName = m_listCustomer.GetItemText(m_nSelectedItem, 1);
 	m_strCusPhone = m_listCustomer.GetItemText(m_nSelectedItem, 2);
+
+	((CButton*)GetDlgItem(IDC_BUTTON_MODIFY))->EnableWindow(TRUE);
+	((CButton*)GetDlgItem(IDC_BUTTON_DELETE))->EnableWindow(TRUE);
+
 	*pResult = 0;
 }
 
@@ -362,17 +375,57 @@ void CHugCoffeView::OnItemchangedListCustomer(NMHDR *pNMHDR, LRESULT *pResult)
 void CHugCoffeView::OnClickedButtonModify()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	((CButton*)GetDlgItem(IDC_BUTTON_DELETE))->EnableWindow(FALSE);
+
 	if(m_iCurSel == 0){
 		CCustomerModifyDlg CCustomerModifyDlg(NULL, m_strCusName, m_strCusPhone, m_lCusId);
-		CString str;
-		str.Format(_T("%ld"), m_lCusId);
-		AfxMessageBox(str);
 		if(CCustomerModifyDlg.DoModal() == 1){
-			m_listCustomer.DeleteAllItems();
 			OnInitialUpdateList();
+			((CButton*)GetDlgItem(IDC_BUTTON_MODIFY))->EnableWindow(FALSE);
 		}
 	}
 	
 
 }
 
+
+
+void CHugCoffeView::OnClickedButtonDelete()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	((CButton*)GetDlgItem(IDC_BUTTON_MODIFY))->EnableWindow(FALSE);
+
+	if(m_iCurSel == 0){
+		if(MessageBox(_T("정말로 삭제 하시겠습니까?"), _T("고객삭제"), MB_OKCANCEL) == IDOK){
+			CtblCustomer<CtblCustomerDeleteAccessor> deleteCustomer;
+			deleteCustomer.m_cus_id = m_lCusId;
+			deleteCustomer.m_dwcus_idStatus = DBSTATUS_S_OK;
+			if(deleteCustomer.OpenAll() == S_OK){
+				OnInitialUpdateList();
+				((CButton*)GetDlgItem(IDC_BUTTON_DELETE))->EnableWindow(FALSE);
+			}else{
+				AfxMessageBox(_T("데이터베이스 접속 실패!!"));
+			}
+		}else{
+
+		}
+	}
+}
+
+
+void CHugCoffeView::OnClickedButtonSelect()
+{
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+
+	((CButton*)GetDlgItem(IDC_BUTTON_MODIFY))->EnableWindow(FALSE);
+	((CButton*)GetDlgItem(IDC_BUTTON_DELETE))->EnableWindow(FALSE);
+
+	if(m_iCurSel == 0){
+		CCustomerSelectDlg CCustomerSelectDlg(NULL, &m_listCustomer);
+		if(CCustomerSelectDlg.DoModal() == 1){
+			
+		}
+	}
+}

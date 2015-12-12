@@ -25,14 +25,25 @@ CCustomerModifyDlg::~CCustomerModifyDlg()
 {
 }
 
+BOOL CCustomerModifyDlg::OnInitDialog(){
+	CDialog::OnInitDialog();
+
+	// 다이얼로그 초기화 코드 작성
+
+	m_editCusName.SetWindowTextW(m_strCusName.Trim());
+	m_editCusPhone.SetWindowTextW(m_strCusPhone.Trim());
+	m_editCusPhone.SetLimitText(11);
+
+	return TRUE;
+}
+
 void CCustomerModifyDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_CUSTOMER_NAME, m_editCusName);
 	DDX_Control(pDX, IDC_EDIT_CUSTOMER_PHONE, m_editCusPhone);
 
-	m_editCusName.SetWindowTextW(m_strCusName);
-	m_editCusPhone.SetWindowTextW(m_strCusPhone);
+	
 }
 
 
@@ -69,9 +80,8 @@ void CCustomerModifyDlg::OnClickedButtonCustomerOk()
 		updateCustomer.m_dwcus_phoneStatus = DBSTATUS_S_OK;
 
 		updateCustomer.m_cus_id = m_lCusId;
-		CString str;
-		str.Format(_T("%ld"), updateCustomer.m_cus_id);
-		AfxMessageBox(str);
+		updateCustomer.m_dwcus_idStatus = DBSTATUS_S_OK;
+
 		if(updateCustomer.OpenAll() == S_OK){
 			AfxMessageBox(_T("입력 완료!!"));
 			EndDialog(1);

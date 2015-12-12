@@ -1,4 +1,5 @@
 #pragma once
+#include "afxwin.h"
 
 
 // CCustomerInsertDlg 대화 상자입니다.
@@ -10,6 +11,7 @@ class CCustomerInsertDlg : public CDialogEx
 public:
 	CCustomerInsertDlg(CWnd* pParent = NULL);   // 표준 생성자입니다.
 	virtual ~CCustomerInsertDlg();
+	virtual BOOL OnInitDialog();
 
 // 대화 상자 데이터입니다.
 	enum { IDD = IDD_DIALOG_CUSTOMER_INSERT };
@@ -23,4 +25,5 @@ public:
 	CString m_strCusName;
 	CString m_strCusPhone;
 	afx_msg void OnClickedButtonCustomerCancel();
+	CEdit m_editCusPhone;
 };
