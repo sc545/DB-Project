@@ -35,15 +35,15 @@ create table tblBeverage
 (
 bev_id int primary key identity(1, 1),
 bev_name varchar(20) not null,
-bev_price int not null,
-bev_size int not null default 1 check(bev_size>=0 and bev_size<3),
-bev_hot_ice int not null default 0 check(bev_hot_ice>=0 and bev_hot_ice<2)
+bev_price int not null
 );
 
 create table tblOrder_Beverage
 (
 order_id int constraint fk_order_id_tblorder_beverage foreign key (order_id) references tblOrder(order_id),
 bev_id int constraint fk_bev_id_tblorder_beverage foreign key (bev_id) references tblBeverage(bev_id),
+bev_size int not null default 1 check(bev_size>=0 and bev_size<3),
+bev_hot_ice int not null default 0 check(bev_hot_ice>=0 and bev_hot_ice<2),
 bev_num int not null
 );
 

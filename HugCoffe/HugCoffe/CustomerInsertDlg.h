@@ -26,4 +26,5 @@ public:
 	CString m_strCusPhone;
 	afx_msg void OnClickedButtonCustomerCancel();
 	CEdit m_editCusPhone;
+	CEdit m_editCusName;
 };

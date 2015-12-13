@@ -28,7 +28,7 @@ BOOL CCustomerInsertDlg::OnInitDialog(){
 	CDialog::OnInitDialog();
 
 	// 다이얼로그 초기화 코드 작성
-
+	m_editCusName.SetLimitText(19);
 	m_editCusPhone.SetLimitText(11);
 
 	return TRUE;
@@ -40,6 +40,7 @@ void CCustomerInsertDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_CUSTOMER_NAME, m_strCusName);
 	DDX_Text(pDX, IDC_EDIT_CUSTOMER_PHONE, m_strCusPhone);
 	DDX_Control(pDX, IDC_EDIT_CUSTOMER_PHONE, m_editCusPhone);
+	DDX_Control(pDX, IDC_EDIT_CUSTOMER_NAME, m_editCusName);
 }
 
 
@@ -57,12 +58,8 @@ void CCustomerInsertDlg::OnClickedButtonCustomerOk()
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
 	UpdateData(TRUE);
 	CtblCustomer<CtblCustomerInsertAccessor> insertCustomer;
-	if(m_strCusName.GetLength()>21){
-		AfxMessageBox(_T("이름이 너무 깁니다!!"));
-	}else if(m_strCusName.GetLength()<1){
+	if(m_strCusName.GetLength()<1){
 		AfxMessageBox(_T("이름을 입력해주세요!!"));
-	}else if(m_strCusPhone.GetLength()>13){
-		AfxMessageBox(_T("핸드폰번호를 다시 입력해주세요!!"));
 	}else if(m_strCusPhone.GetLength()<1){
 		AfxMessageBox(_T("핸드폰번호를 입력해주세요!!"));
 	}else{
@@ -75,7 +72,6 @@ void CCustomerInsertDlg::OnClickedButtonCustomerOk()
 		insertCustomer.m_dwcus_phoneStatus = DBSTATUS_S_OK;
 
 		if(insertCustomer.OpenAll() == S_OK){
-			AfxMessageBox(_T("입력 완료!!"));
 			EndDialog(1);
 		}else{
 			AfxMessageBox(_T("데이터베이스 접속 실패!!"));

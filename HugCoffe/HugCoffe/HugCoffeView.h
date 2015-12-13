@@ -65,6 +65,13 @@ public:
 	LONG m_lCusId;
 	afx_msg void OnClickedButtonDelete();
 	afx_msg void OnClickedButtonSelect();
+	afx_msg void OnItemchangedListMenu1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnItemchangedListMenu2(NMHDR *pNMHDR, LRESULT *pResult);
+	LONG m_lMenuId;
+//	LONG m_lMenu2Id;
+	CString m_strMenuName;
+	LONG m_lMenuPrice;
+	int m_iSelectedMenu;
 };
 
 #ifndef _DEBUG  // HugCoffeView.cpp의 디버그 버전

@@ -83,7 +83,6 @@ void CCustomerModifyDlg::OnClickedButtonCustomerOk()
 		updateCustomer.m_dwcus_idStatus = DBSTATUS_S_OK;
 
 		if(updateCustomer.OpenAll() == S_OK){
-			AfxMessageBox(_T("입력 완료!!"));
 			EndDialog(1);
 		}else{
 			AfxMessageBox(_T("데이터베이스 접속 실패!!"));

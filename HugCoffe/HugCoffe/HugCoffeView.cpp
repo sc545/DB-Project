@@ -15,6 +15,12 @@
 #include "tblCustomer.h"
 #include "CustomerModifyDlg.h"
 #include "CustomerSelectDlg.h"
+#include "tblBeverage.h"
+#include "MenuInsertDlg.h"
+#include "tblSide.h"
+#include "MenuModifyDlg.h"
+#include "MenuSelectDlg.h"
+#include "OrderInsertDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -32,6 +38,8 @@ BEGIN_MESSAGE_MAP(CHugCoffeView, CFormView)
 	ON_BN_CLICKED(IDC_BUTTON_MODIFY, &CHugCoffeView::OnClickedButtonModify)
 	ON_BN_CLICKED(IDC_BUTTON_DELETE, &CHugCoffeView::OnClickedButtonDelete)
 	ON_BN_CLICKED(IDC_BUTTON_SELECT, &CHugCoffeView::OnClickedButtonSelect)
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_MENU1, &CHugCoffeView::OnItemchangedListMenu1)
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_MENU2, &CHugCoffeView::OnItemchangedListMenu2)
 END_MESSAGE_MAP()
 
 // CHugCoffeView 생성/소멸
@@ -43,6 +51,10 @@ CHugCoffeView::CHugCoffeView()
 	, m_strCusName(_T(""))
 	, m_strCusPhone(_T(""))
 	, m_lCusId(0)
+	, m_lMenuId(0)
+	, m_strMenuName(_T(""))
+	, m_lMenuPrice(0)
+	, m_iSelectedMenu(0)
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
 
@@ -104,10 +116,10 @@ void CHugCoffeView::OnInitialUpdate()
 	m_listCustomer.SetExtendedStyle(m_listCustomer.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 	LV_COLUMN lvColumn1;
-	LPWSTR list1[5] = {_T("음료번호"), _T("음료이름"), _T("음료가격"), _T("사이즈"), _T("Hot & Ice")};
-	int nWidth1[5] = {100, 100, 150, 100, 100};
+	LPWSTR list1[3] = {_T("음료번호"), _T("음료이름"), _T("음료가격")};
+	int nWidth1[3] = {100, 100, 150};
 
-	for(int i=0; i<5; i++){
+	for(int i=0; i<3; i++){
 		lvColumn1.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
 		lvColumn1.fmt = LVCFMT_CENTER;
 		lvColumn1.pszText = list1[i];
@@ -134,10 +146,10 @@ void CHugCoffeView::OnInitialUpdate()
 	m_listMenu2.SetExtendedStyle(m_listMenu1.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 	LV_COLUMN lvColumn3;
-	LPWSTR list3[6] = {_T("주문번호"), _T("음료"), _T("사이드"), _T("주문날짜"), _T("총주문액"), _T("고객번호")};
-	int nWidth3[6] = {100, 100, 150, 100, 100, 100};
+	LPWSTR list3[8] = {_T("주문번호"), _T("음료"), _T("사이즈"), _T("Hot & Ice"), _T("사이드"), _T("주문날짜"), _T("총주문액"), _T("고객번호")};
+	int nWidth3[8] = {100, 100, 150, 100, 100, 100, 100, 100};
 
-	for(int i=0; i<6; i++){
+	for(int i=0; i<8; i++){
 		lvColumn3.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
 		lvColumn3.fmt = LVCFMT_CENTER;
 		lvColumn3.pszText = list3[i];
@@ -290,7 +302,8 @@ void CHugCoffeView::OnTcnSelchangeTab3(NMHDR *pNMHDR, LRESULT *pResult)
 		GetDlgItem(IDC_BUTTON_SELECT)->SetWindowText(_T("매출검색"));
 		break;
 	}	
-
+	((CButton*)GetDlgItem(IDC_BUTTON_MODIFY))->EnableWindow(FALSE);
+	((CButton*)GetDlgItem(IDC_BUTTON_DELETE))->EnableWindow(FALSE);
 }
 
 
@@ -306,6 +319,16 @@ void CHugCoffeView::OnClickedButtonInsert()
 		if(CCustomerInsertDlg.DoModal() == 1){
 			OnInitialUpdateList();
 		}
+	}else if(m_iCurSel == 1){
+		CMenuInsertDlg CMenuInsertDlg;
+		if(CMenuInsertDlg.DoModal() == 1){
+			OnInitialUpdateList();
+		}
+	}else if(m_iCurSel == 2){
+		COrderInsertDlg COrderInsertDlg;
+		if(COrderInsertDlg.DoModal() == 1){
+			OnInitialUpdateList();
+		}
 	}
 }
 
@@ -313,7 +336,11 @@ void CHugCoffeView::OnClickedButtonInsert()
 void CHugCoffeView::OnInitialUpdateList(void)
 {
 	m_listCustomer.DeleteAllItems();
+	m_listMenu1.DeleteAllItems();
+	m_listMenu2.DeleteAllItems();
 	CtblCustomer<CtblCustomerSelectAccessor> selectCustomer;
+	CtblBeverage<CtblBeverageSelectAccessor> selectBeverage;
+	CtblSide<CtblSideSelectAccessor> selectSide;
 	int nCount;
 	LV_ITEM lvItem;
 	CString strCount;
@@ -350,6 +377,59 @@ void CHugCoffeView::OnInitialUpdateList(void)
 	}else{
 		AfxMessageBox(_T("데이터베이스 접속 실패!!"));
 	}
+	if(selectBeverage.OpenAll() == S_OK){
+		while(selectBeverage.MoveNext() == S_OK){
+			nCount = m_listMenu1.GetItemCount();
+			lvItem.mask = LVIF_TEXT;
+			lvItem.iItem = nCount;
+			lvItem.iSubItem = 0;
+			strCount.Format(_T("%d"), selectBeverage.m_bev_id);
+			lvItem.pszText = (LPWSTR)(LPCTSTR)strCount;
+			m_listMenu1.InsertItem(&lvItem);
+				
+			lvItem.mask = LVIF_TEXT;
+			lvItem.iItem = nCount;
+			lvItem.iSubItem = 1;
+			lvItem.pszText = (LPWSTR)(LPCTSTR)selectBeverage.m_bev_name;
+			m_listMenu1.SetItem(&lvItem);
+
+			lvItem.mask = LVIF_TEXT;
+			lvItem.iItem = nCount;
+			lvItem.iSubItem = 2;
+			strCount.Format(_T("%d"), selectBeverage.m_bev_price);
+			lvItem.pszText = (LPWSTR)(LPCTSTR)strCount;
+			m_listMenu1.SetItem(&lvItem);
+		}
+	}else{
+		AfxMessageBox(_T("데이터베이스 접속 실패!!"));
+	}
+	if(selectSide.OpenAll() == S_OK){
+		while(selectSide.MoveNext() == S_OK){
+			nCount = m_listMenu2.GetItemCount();
+			lvItem.mask = LVIF_TEXT;
+			lvItem.iItem = nCount;
+			lvItem.iSubItem = 0;
+			strCount.Format(_T("%d"), selectSide.m_side_id);
+			lvItem.pszText = (LPWSTR)(LPCTSTR)strCount;
+			m_listMenu2.InsertItem(&lvItem);
+				
+			lvItem.mask = LVIF_TEXT;
+			lvItem.iItem = nCount;
+			lvItem.iSubItem = 1;
+			lvItem.pszText = (LPWSTR)(LPCTSTR)selectSide.m_side_name;
+			m_listMenu2.SetItem(&lvItem);
+
+			lvItem.mask = LVIF_TEXT;
+			lvItem.iItem = nCount;
+			lvItem.iSubItem = 2;
+			strCount.Format(_T("%d"), selectSide.m_side_price);
+			lvItem.pszText = (LPWSTR)(LPCTSTR)strCount;
+			m_listMenu2.SetItem(&lvItem);
+		}
+	}else{
+		AfxMessageBox(_T("데이터베이스 접속 실패!!"));
+	}
+
 }
 
 
@@ -384,6 +464,11 @@ void CHugCoffeView::OnClickedButtonModify()
 			OnInitialUpdateList();
 			((CButton*)GetDlgItem(IDC_BUTTON_MODIFY))->EnableWindow(FALSE);
 		}
+	}else if(m_iCurSel == 1){
+		CMenuModifyDlg CMenuModifyDlg(NULL, m_strMenuName, m_lMenuPrice, m_lMenuId, m_iSelectedMenu);
+		if(CMenuModifyDlg.DoModal() == 1){
+			OnInitialUpdateList();
+		}
 	}
 	
 
@@ -411,6 +496,36 @@ void CHugCoffeView::OnClickedButtonDelete()
 		}else{
 
 		}
+	}else if(m_iCurSel == 1){
+		if(m_iSelectedMenu == 0){
+			if(MessageBox(_T("정말로 삭제 하시겠습니까?"), _T("메뉴삭제"), MB_OKCANCEL) == IDOK){
+				CtblBeverage<CtblBeverageDeleteAccessor> deleteBeverage;
+				deleteBeverage.m_bev_id = m_lMenuId;
+				deleteBeverage.m_dwbev_idStatus = DBSTATUS_S_OK;
+				if(deleteBeverage.OpenAll() == S_OK){
+					OnInitialUpdateList();
+					((CButton*)GetDlgItem(IDC_BUTTON_DELETE))->EnableWindow(FALSE);
+				}else{
+					AfxMessageBox(_T("데이터베이스 접속 실패!!"));
+				}
+			}else{
+
+			}
+		}else if(m_iSelectedMenu == 1){
+			if(MessageBox(_T("정말로 삭제 하시겠습니까?"), _T("메뉴삭제"), MB_OKCANCEL) == IDOK){
+				CtblSide<CtblSideDeleteAccessor> deleteSide;
+				deleteSide.m_side_id = m_lMenuId;
+				deleteSide.m_dwside_idStatus = DBSTATUS_S_OK;
+				if(deleteSide.OpenAll() == S_OK){
+					OnInitialUpdateList();
+					((CButton*)GetDlgItem(IDC_BUTTON_DELETE))->EnableWindow(FALSE);
+				}else{
+					AfxMessageBox(_T("데이터베이스 접속 실패!!"));
+				}
+			}else{
+
+			}
+		}
 	}
 }
 
@@ -427,5 +542,50 @@ void CHugCoffeView::OnClickedButtonSelect()
 		if(CCustomerSelectDlg.DoModal() == 1){
 			
 		}
+	}else if(m_iCurSel == 1){
+		if(m_iSelectedMenu == 0){
+			CMenuSelectDlg CMenuSelectDlg(NULL, &m_listMenu1, &m_listMenu2);
+			if(CMenuSelectDlg.DoModal() == 1){
+
+			}
+		}else{
+
+		}
 	}
+}
+
+
+void CHugCoffeView::OnItemchangedListMenu1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+	//@TN
+		*pResult = 0;
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_nSelectedItem = pNMLV->iItem;
+	m_iSelectedMenu = 0;
+	m_lMenuId = _wtol(m_listMenu1.GetItemText(m_nSelectedItem, 0));
+	m_strMenuName = m_listMenu1.GetItemText(m_nSelectedItem, 1);
+	m_lMenuPrice = _wtol(m_listMenu1.GetItemText(m_nSelectedItem, 2));
+
+	((CButton*)GetDlgItem(IDC_BUTTON_MODIFY))->EnableWindow(TRUE);
+	((CButton*)GetDlgItem(IDC_BUTTON_DELETE))->EnableWindow(TRUE);
+	*pResult = 0;
+}
+
+
+void CHugCoffeView::OnItemchangedListMenu2(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+	//@TN
+		*pResult = 0;
+	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	m_nSelectedItem = pNMLV->iItem;
+	m_iSelectedMenu = 1;
+	m_lMenuId = _wtol(m_listMenu2.GetItemText(m_nSelectedItem, 0));
+	m_strMenuName = m_listMenu2.GetItemText(m_nSelectedItem, 1);
+	m_lMenuPrice = _wtol(m_listMenu2.GetItemText(m_nSelectedItem, 2));
+
+	((CButton*)GetDlgItem(IDC_BUTTON_MODIFY))->EnableWindow(TRUE);
+	((CButton*)GetDlgItem(IDC_BUTTON_DELETE))->EnableWindow(TRUE);
+	*pResult = 0;
 }
