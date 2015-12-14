@@ -32,6 +32,7 @@
 #define IDC_BUTTON_SELECT               1012
 #define IDC_LIST                        1014
 #define IDC_LIST_ORDER                  1014
+#define IDC_LIST_ORDER_LIST             1014
 #define IDC_LIST_MENU2                  1016
 #define IDC_LIST_MENU1                  1017
 #define IDC_LIST_CUSTOMER               1018
@@ -42,10 +43,13 @@
 #define IDC_EDIT_CUSTOMER_PHONE         1022
 #define ID_BUTTON_CUSTOMER_CANCEL       1023
 #define IDC_EDIT_CUSTOMER_OPTION        1024
+#define IDC_EDIT_PRICE                  1024
 #define IDC_COMBO_CUSTOMER_OPTION       1025
 #define IDC_EDIT_MENU_NAME              1026
 #define IDC_EDIT_CUSTOMER_NAME2         1026
+#define IDC_EDIT_TOTAL_PRICE            1026
 #define IDC_EDIT_CUSTOMER_PHONE2        1027
+#define IDC_EDIT_SAVE_POINT             1027
 #define ID_BUTTON_MENU_OK               1028
 #define ID_BUTTON_MENU_CANCEL           1029
 #define IDC_RADIO_BEVERAGE              1030
@@ -55,21 +59,28 @@
 #define IDC_COMBO_MENU_OPTION           1034
 #define ID_BUTTON_ORDER_OK              1035
 #define IDC_COMBO1                      1036
+#define IDC_COMBO_BEVERAGE              1036
 #define IDC_COMBO2                      1037
+#define IDC_COMBO_SIZE                  1037
 #define IDC_COMBO3                      1038
+#define IDC_COMBO_HOT_ICE               1038
 #define IDC_COMBO4                      1039
+#define IDC_COMBO_SIDE                  1039
 #define IDC_COMBO5                      1040
 #define ID_BUTTON_ORDER_OK2             1041
 #define ID_BUTTON_ORDER_OK3             1042
 #define ID_BUTTON_ORDER_CANCEL          1043
+#define IDC_EDIT_CUSTOMER_ID            1044
+#define IDC_EDIT_POINT                  1045
+#define IDC_CHECK_POINT                 1046
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        315
+#define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1044
+#define _APS_NEXT_CONTROL_VALUE         1047
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
