@@ -161,10 +161,10 @@ void CHugCoffeView::OnInitialUpdate()
 	m_listOrder.SetExtendedStyle(m_listOrder.GetExtendedStyle() | LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 
 	LV_COLUMN lvColumn4;
-	LPWSTR list4[2] = {_T("물품번호"), _T("수량")};
-	int nWidth4[2] = {100, 100};
+	LPWSTR list4[3] = {_T("물품번호"), _T("물품명") , _T("수량")};
+	int nWidth4[3] = {100, 100, 100};
 
-	for(int i=0; i<2; i++){
+	for(int i=0; i<3; i++){
 		lvColumn4.mask = LVCF_FMT | LVCF_SUBITEM | LVCF_TEXT | LVCF_WIDTH;
 		lvColumn4.fmt = LVCFMT_CENTER;
 		lvColumn4.pszText = list4[i];

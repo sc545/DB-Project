@@ -15,6 +15,7 @@
 #define IDD_DIALOG_MENU_MODIFY          315
 #define IDD_DIALOG_MENU_SELECT          316
 #define IDD_DIALOG_ORDER_INSERT         317
+#define IDD_DIALOG_ORDER_CUSTOMER_SELECT 318
 #define IDC_EDIT1                       1000
 #define IDC_EDIT_ID                     1000
 #define IDC_EDIT2                       1001
@@ -40,7 +41,9 @@
 #define IDC_LIST_SALES                  1020
 #define ID_BUTTON_CUSTOMER_OK           1020
 #define IDC_EDIT_CUSTOMER_NAME          1021
+#define ID_BUTTON_CUSTOMER_SELECT_OK    1021
 #define IDC_EDIT_CUSTOMER_PHONE         1022
+#define ID_BUTTON_CUSTOMER_SELECT_CANCEL 1022
 #define ID_BUTTON_CUSTOMER_CANCEL       1023
 #define IDC_EDIT_CUSTOMER_OPTION        1024
 #define IDC_EDIT_PRICE                  1024
@@ -68,11 +71,15 @@
 #define IDC_COMBO_SIDE                  1039
 #define IDC_COMBO5                      1040
 #define ID_BUTTON_ORDER_OK2             1041
+#define ID_BUTTON_ORDER_INSERT          1041
 #define ID_BUTTON_ORDER_OK3             1042
+#define ID_BUTTON_ORDER_DELETE          1042
 #define ID_BUTTON_ORDER_CANCEL          1043
 #define IDC_EDIT_CUSTOMER_ID            1044
 #define IDC_EDIT_POINT                  1045
 #define IDC_CHECK_POINT                 1046
+#define ID_BUTTON_CUSTOMER_SELECT       1047
+#define ID_BUTTON_CUSTOMER_SELECT_ALL   1048
 
 // Next default values for new objects
 // 
@@ -80,7 +87,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        316
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1047
+#define _APS_NEXT_CONTROL_VALUE         1049
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
