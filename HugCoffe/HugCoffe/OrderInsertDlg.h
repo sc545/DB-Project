@@ -60,4 +60,6 @@ public:
 	afx_msg void OnBnClickedCheckPoint();
 	afx_msg void OnEnChangeEditPoint();
 	LONG m_lSavePoint;
+	LONG m_lOrderId;
+//	int m_nSelectedItem;
 };

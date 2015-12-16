@@ -72,6 +72,17 @@ public:
 	CString m_strMenuName;
 	LONG m_lMenuPrice;
 	int m_iSelectedMenu;
+	afx_msg void OnItemchangedListOrder(NMHDR *pNMHDR, LRESULT *pResult);
+	int m_iOrderId;
+	LONG m_lPoint;
+	int m_iGoodsId;
+	afx_msg void OnItemchangedListGoods(NMHDR *pNMHDR, LRESULT *pResult);
+	CString m_strGoodsName;
+	LONG m_lGoodsNum;
+	CString m_strSalesDate;
+	LONG m_lSalesTotal;
+	LONG m_lSalesNum;
+	afx_msg void OnItemchangedListSales(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 #ifndef _DEBUG  // HugCoffeView.cpp의 디버그 버전

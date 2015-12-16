@@ -9,7 +9,9 @@
 #include "tblSide.h"
 #include "OrderCustomerSelectDlg.h"
 #include "tblCustomer.h"
-
+#include "tblOrder.h"
+#include "tblOrder_Beverage.h"
+#include "tblOrder_Side.h"
 
 // COrderInsertDlg 대화 상자입니다.
 
@@ -35,6 +37,7 @@ COrderInsertDlg::COrderInsertDlg(CWnd* pParent /*=NULL*/)
 	, m_lPoint(0)
 	, m_iCusId(0)
 	, m_lSavePoint(0)
+	, m_lOrderId(0)
 {
 
 }
@@ -60,9 +63,21 @@ BOOL COrderInsertDlg::OnInitDialog(){
 
 	((CButton*)GetDlgItem(ID_BUTTON_ORDER_INSERT))->EnableWindow(FALSE);
 	((CButton*)GetDlgItem(ID_BUTTON_ORDER_DELETE))->EnableWindow(FALSE);
+	((CButton*)GetDlgItem(ID_BUTTON_ORDER_OK))->EnableWindow(FALSE);
 
 	CtblBeverage<CtblBeverageSelectAccessor> selectBeverage;
 	CtblSide<CtblSideSelectAccessor> selectSide;
+	CtblOrder<CtblOrderSelectAccessor> selectOrder;
+
+	if(selectOrder.OpenAll() == S_OK){
+		while(selectOrder.MoveNext() == S_OK){
+			if(selectOrder.m_order_id > m_lOrderId)
+				m_lOrderId = selectOrder.m_order_id;
+		}
+		++m_lOrderId;
+	}else{
+		AfxMessageBox(_T("데이터베이스 접속 실패!!"));
+	}
 
 	if(selectBeverage.OpenAll() == S_OK){
 		while(selectBeverage.MoveNext() == S_OK){
@@ -143,7 +158,7 @@ void COrderInsertDlg::OnClickedButtonOrderInsert()
 	LV_ITEM lvItem;
 	CString str;
 	int price = 0;
-
+	UpdateData();
 	nCount = m_listOrder.GetItemCount();
 	lvItem.mask = LVIF_TEXT;
 	lvItem.iItem = nCount;
@@ -225,9 +240,12 @@ void COrderInsertDlg::OnClickedButtonOrderInsert()
 	m_lTotalPrice = m_lPrice - m_lPoint;
 	str.Format(_T("%ld"), m_lTotalPrice);
 	m_strTotalPrice = str;
-	m_lSavePoint = m_lTotalPrice*(0.1L);
-	str.Format(_T("%ld"), m_lSavePoint);
-	m_strSavePoint = str;
+
+	if(m_strCusId.Compare(_T("")) != 0 && m_strCusId.Compare(_T(" "))){
+		m_lSavePoint = m_lTotalPrice*(0.1L);
+		str.Format(_T("%ld"), m_lSavePoint);
+		m_strSavePoint = str;
+	}
 	UpdateData(FALSE);
 
 	m_nExtraCharge = 0;
@@ -254,6 +272,8 @@ void COrderInsertDlg::OnSelchangeComboBeverage()
 		m_strHotIce = _T("-");
 		m_cbSize.EnableWindow(FALSE);
 		m_cbHotIce.EnableWindow(FALSE);
+		m_cbBeverage.EnableWindow(TRUE);
+		m_cbSide.EnableWindow(TRUE);
 	}else{
 		((CButton*)GetDlgItem(ID_BUTTON_ORDER_INSERT))->EnableWindow(TRUE);
 		if(m_cbBeverage.GetCurSel() == 0){
@@ -262,12 +282,14 @@ void COrderInsertDlg::OnSelchangeComboBeverage()
 			m_strHotIce = _T("-");
 			m_cbSize.EnableWindow(FALSE);
 			m_cbHotIce.EnableWindow(FALSE);
+			m_cbSide.EnableWindow(TRUE);
 		}else{
 			m_cbBeverage.GetLBText(m_cbBeverage.GetCurSel(), m_strBeverage);
 			m_strSize = _T("미디움");
 			m_strHotIce = _T("Hot");
 			m_cbSize.EnableWindow(TRUE);
 			m_cbHotIce.EnableWindow(TRUE);
+			m_cbSide.EnableWindow(FALSE);
 		}
 	
 	}
@@ -308,12 +330,16 @@ void COrderInsertDlg::OnSelchangeComboSide()
 	if(m_cbBeverage.GetCurSel() == 0 && m_cbSide.GetCurSel() == 0){
 		((CButton*)GetDlgItem(ID_BUTTON_ORDER_INSERT))->EnableWindow(FALSE);
 		m_strSide = _T("-");
+		m_cbBeverage.EnableWindow(TRUE);
+		m_cbSide.EnableWindow(TRUE);
 	}else{
 		((CButton*)GetDlgItem(ID_BUTTON_ORDER_INSERT))->EnableWindow(TRUE);
 		if(m_cbSide.GetCurSel() == 0){
 			m_strSide = _T("-");
+			m_cbBeverage.EnableWindow(TRUE);
 		}else{
 			m_cbSide.GetLBText(m_cbSide.GetCurSel(), m_strSide);
+			m_cbBeverage.EnableWindow(FALSE);
 		}
 	}
 }
@@ -322,7 +348,209 @@ void COrderInsertDlg::OnSelchangeComboSide()
 void COrderInsertDlg::OnClickedButtonOrderOk()
 {
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	CtblOrder<CtblOrderInsertAccessor> insertOrder;
+	CtblCustomer<CtblCustomerUpdatePointAccessor> updatePointCustomer;
+	
+	UpdateData();
 
+	SYSTEMTIME time;
+	GetLocalTime(&time);
+	CString strCurTime;
+	//strCurTime.Format(_T("%d.%d.%d.%d.%d.%d"), time.wYear, time.wMonth, time.wDay, time.wHour, time.wMinute, time.wSecond);
+	strCurTime.Format(_T("%d-%d-%d"), time.wYear, time.wMonth, time.wDay);
+
+
+	insertOrder.m_order_id = m_lOrderId;
+	insertOrder.m_dworder_idStatus = DBSTATUS_S_OK;
+
+	wcscpy_s((wchar_t*)insertOrder.m_order_date, 11, (const wchar_t*)strCurTime.GetBuffer(strCurTime.GetLength()));
+	insertOrder.m_dworder_dateLength = wcslen((const wchar_t*)strCurTime.GetBuffer(strCurTime.GetLength()))*2;
+	insertOrder.m_dworder_dateStatus = DBSTATUS_S_OK;
+
+	if(m_checkPoint.GetCheck())
+		insertOrder.m_order_used_point = _wtol(m_strPoint);
+	else
+		insertOrder.m_order_used_point = 0;
+	insertOrder.m_dworder_used_pointStatus = DBSTATUS_S_OK;
+
+	insertOrder.m_order_price = _wtol(m_strTotalPrice);
+	insertOrder.m_dworder_priceStatus = DBSTATUS_S_OK;
+
+	insertOrder.m_order_save_point = _wtol(m_strSavePoint);
+	insertOrder.m_dworder_save_pointStatus = DBSTATUS_S_OK;
+
+	if(m_strCusId.Compare(_T("")) == 0 && m_strCusId.Compare(_T(" ")) == 0){
+		insertOrder.m_cus_id = -1;
+	}else{
+		insertOrder.m_cus_id = _wtol(m_strCusId);
+
+		// 고객 포인트 차감
+		if(m_checkPoint.GetCheck()){
+			updatePointCustomer.m_cus_id = _wtol(m_strCusId);
+			updatePointCustomer.m_dwcus_idStatus = DBSTATUS_S_OK;
+			
+			updatePointCustomer.m_cus_point = -_wtol(m_strPoint);
+			updatePointCustomer.m_dwcus_pointStatus = DBSTATUS_S_OK;
+
+			if(updatePointCustomer.OpenAll() == S_OK){
+
+			}else{
+				AfxMessageBox(_T("데이터베이스 접속 실패!!"));
+			}
+			updatePointCustomer.CloseAll();
+		}
+		// 고객 포인트 적립
+		updatePointCustomer.m_cus_id = _wtol(m_strCusId);
+		updatePointCustomer.m_dwcus_idStatus = DBSTATUS_S_OK;
+
+		updatePointCustomer.m_cus_point = _wtol(m_strSavePoint);
+		updatePointCustomer.m_dwcus_pointStatus = DBSTATUS_S_OK;
+
+		if(updatePointCustomer.OpenAll() == S_OK){
+
+		}else{
+			AfxMessageBox(_T("데이터베이스 접속 실패!!"));
+		}
+
+
+	}
+	insertOrder.m_dwcus_idStatus = DBSTATUS_S_OK;
+
+	
+
+	
+	int nCount = m_listOrder.GetItemCount();
+	CString str;
+	if(insertOrder.OpenAll() == S_OK){
+		
+		for(int i=0;i<nCount; i++){
+			CtblOrder_Beverage<CtblOrder_BeverageInsertAccessor> insertOrederBeverage;
+			CtblOrder_Side<CtblOrder_SideInsertAccessor> insertOrederSide;
+			CtblBeverage<CtblBeverageSelectWhereNameAccessor> selectWhereNameBeverage;
+			CtblSide<CtblSideSelectWhereNameAccessor> selectWhereNameSide;
+
+			insertOrederBeverage.m_order_id = m_lOrderId;
+			insertOrederBeverage.m_dworder_idStatus = DBSTATUS_S_OK;
+			insertOrederSide.m_order_id = m_lOrderId;
+			insertOrederSide.m_dworder_idStatus = DBSTATUS_S_OK;
+
+			str = m_listOrder.GetItemText(i, 0);
+			// 음료 메뉴 일 경우
+			if(str.Compare(_T("-")) != 0){
+				wcscpy_s((wchar_t*)selectWhereNameBeverage.m_bev_name, 20, (const wchar_t*)str.GetBuffer(str.GetLength()));
+				selectWhereNameBeverage.m_dwbev_nameLength = wcslen((const wchar_t*)str.GetBuffer(str.GetLength()))*2;
+				selectWhereNameBeverage.m_dwbev_nameStatus = DBSTATUS_S_OK;
+
+				if(selectWhereNameBeverage.OpenAll() == S_OK){
+					if(selectWhereNameBeverage.MoveNext() == S_OK){
+						insertOrederBeverage.m_bev_id = selectWhereNameBeverage.m_bev_id;
+						insertOrederBeverage.m_dwbev_idStatus = DBSTATUS_S_OK;
+						
+						str = m_listOrder.GetItemText(i, 1);
+						if(str.Compare(_T("스몰")) == 0){
+							insertOrederBeverage.m_bev_size = 0;
+						}else if(str.Compare(_T("미디움")) == 0){
+							insertOrederBeverage.m_bev_size = 1;
+						}else{
+							insertOrederBeverage.m_bev_size = 2;
+						}
+						insertOrederBeverage.m_dwbev_sizeStatus = DBSTATUS_S_OK;
+
+						str = m_listOrder.GetItemText(i, 2);
+						if(str.Compare(_T("Hot")) == 0){
+							insertOrederBeverage.m_bev_hot_ice = 0;
+						}else{
+							insertOrederBeverage.m_bev_hot_ice = 1;
+						}
+						insertOrederBeverage.m_dwbev_hot_iceStatus = DBSTATUS_S_OK;
+
+						
+						insertOrederBeverage.m_bev_price = _wtol(m_listOrder.GetItemText(i, 4));
+						insertOrederBeverage.m_dwbev_priceStatus = DBSTATUS_S_OK;
+
+						if(insertOrederBeverage.OpenAll() == S_OK){
+
+						}else{
+							AfxMessageBox(_T("데이터베이스 접속 실패!!1"));
+						}
+					}
+
+				}else{
+					AfxMessageBox(_T("데이터베이스 접속 실패!!2"));
+				}
+
+
+
+				insertOrederSide.m_side_id = -1;
+				insertOrederSide.m_dwside_idStatus = DBSTATUS_S_OK;
+
+				insertOrederSide.m_side_price = 0;
+				insertOrederSide.m_dwside_priceStatus = DBSTATUS_S_OK;
+						
+				if(insertOrederSide.OpenAll() == S_OK){
+
+				}else{
+					AfxMessageBox(_T("데이터베이스 접속 실패!!3"));
+				}
+
+			// 사이드 메뉴 일 경우
+			}else{
+				str = m_listOrder.GetItemText(i, 3);
+				wcscpy_s((wchar_t*)selectWhereNameSide.m_side_name, 20, (const wchar_t*)str.GetBuffer(str.GetLength()));
+				selectWhereNameSide.m_dwside_nameLength = wcslen((const wchar_t*)str.GetBuffer(str.GetLength()))*2;
+				selectWhereNameSide.m_dwside_nameStatus = DBSTATUS_S_OK;
+
+				if(selectWhereNameSide.OpenAll() == S_OK){
+					if(selectWhereNameSide.MoveNext() == S_OK){
+						insertOrederSide.m_side_id = selectWhereNameSide.m_side_id;
+						insertOrederSide.m_dwside_idStatus = DBSTATUS_S_OK;
+
+						insertOrederSide.m_side_price = _wtol(m_listOrder.GetItemText(i, 4));
+						insertOrederSide.m_dwside_priceStatus = DBSTATUS_S_OK;
+						
+						if(insertOrederSide.OpenAll() == S_OK){
+
+						}else{
+							AfxMessageBox(_T("데이터베이스 접속 실패!!3"));
+						}
+					}
+
+				}else{
+					AfxMessageBox(_T("데이터베이스 접속 실패!!4"));
+				}
+
+
+				insertOrederBeverage.m_bev_id = -1;
+				insertOrederBeverage.m_dwbev_idStatus = DBSTATUS_S_OK;
+						
+				insertOrederBeverage.m_bev_size = -1;
+				insertOrederBeverage.m_dwbev_sizeStatus = DBSTATUS_S_OK;
+
+				insertOrederBeverage.m_bev_hot_ice = -1;
+				insertOrederBeverage.m_dwbev_hot_iceStatus = DBSTATUS_S_OK;
+
+				insertOrederBeverage.m_bev_price = 0;
+				insertOrederBeverage.m_dwbev_priceStatus = DBSTATUS_S_OK;
+
+				if(insertOrederBeverage.OpenAll() == S_OK){
+
+				}else{
+					AfxMessageBox(_T("데이터베이스 접속 실패!!1"));
+				}
+			
+				
+			}
+			
+
+		}
+
+		
+
+	}else{
+		AfxMessageBox(_T("데이터베이스 접속 실패!!5"));
+	}
+	
+	EndDialog(1);
 
 }
 
@@ -352,7 +580,8 @@ void COrderInsertDlg::OnInsertitemListOrderList(NMHDR *pNMHDR, LRESULT *pResult)
 	//@TN
 		*pResult = 0;
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-
+		
+	((CButton*)GetDlgItem(ID_BUTTON_ORDER_OK))->EnableWindow(TRUE);
 	*pResult = 0;
 }
 
@@ -363,6 +592,7 @@ void COrderInsertDlg::OnDeleteitemListOrderList(NMHDR *pNMHDR, LRESULT *pResult)
 	//@TN
 		*pResult = 0;
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	UpdateData();
 	m_lPrice -= _wtol(m_listOrder.GetItemText(pNMLV->iItem, 4));
 	CString str;
 	str.Format(_T("%ld"), m_lPrice);
@@ -370,10 +600,17 @@ void COrderInsertDlg::OnDeleteitemListOrderList(NMHDR *pNMHDR, LRESULT *pResult)
 	m_lTotalPrice = m_lPrice - m_lPoint;
 	str.Format(_T("%ld"), m_lTotalPrice);
 	m_strTotalPrice = str;
-	m_lSavePoint = m_lTotalPrice*(0.1L);
-	str.Format(_T("%ld"), m_lSavePoint);
-	m_strSavePoint = str;
+
+	if(m_strCusId.Compare(_T("")) != 0 && m_strCusId.Compare(_T(" "))){
+		m_lSavePoint = m_lTotalPrice*(0.1L);
+		str.Format(_T("%ld"), m_lSavePoint);
+		m_strSavePoint = str;
+	}
 	UpdateData(FALSE);
+	
+	if(m_listOrder.GetItemCount() == 1){
+		((CButton*)GetDlgItem(ID_BUTTON_ORDER_OK))->EnableWindow(FALSE);
+	}
 	*pResult = 0;
 }
 
@@ -415,9 +652,9 @@ void COrderInsertDlg::OnBnClickedButtonCustomerSelect()
 		m_lTotalPrice = m_lPrice;
 		str.Format(_T("%ld"), m_lTotalPrice);
 		m_strTotalPrice = str;
-		m_lSavePoint = m_lTotalPrice*(0.1L);
-		str.Format(_T("%ld"), m_lSavePoint);
-		m_strSavePoint = str;
+
+		m_strSavePoint = _T("");
+
 		((CButton*)GetDlgItem(IDC_EDIT_POINT))->EnableWindow(FALSE);
 	}
 	UpdateData(FALSE);

@@ -37,4 +37,5 @@ public:
 	afx_msg void OnClickedButtonCustomerSelectCancel();
 	afx_msg void OnItemchangedListCustomer(NMHDR *pNMHDR, LRESULT *pResult);
 	LONG m_lCusId;
+//	LONG m_lOrderId;
 };

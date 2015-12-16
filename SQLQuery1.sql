@@ -1,7 +1,7 @@
 create database HugCoffe;
-
+drop database HugCoffe
 use HugCoffe
-
+use master 
 create table admin
 (
 id varchar(20) constraint id unique,
@@ -25,12 +25,12 @@ cus_point int not null default 0
 
 create table tblOrder
 (
-order_id int primary key identity(1, 1),
+order_id int primary key,
 order_date date not null,
 order_used_point int not null default 0,
 order_price int not null default 0,
 order_save_point int not null default 0,
-cus_id int constraint fk_cus_id_tblorder foreign key (cus_id) references tblCustomer(cus_id)
+cus_id int
 );
 
 create table tblBeverage
@@ -43,9 +43,10 @@ bev_price int not null
 create table tblOrder_Beverage
 (
 order_id int constraint fk_order_id_tblorder_beverage foreign key (order_id) references tblOrder(order_id),
-bev_id int constraint fk_bev_id_tblorder_beverage foreign key (bev_id) references tblBeverage(bev_id),
-bev_size int not null default 1 check(bev_size>=0 and bev_size<3),
-bev_hot_ice int not null default 0 check(bev_hot_ice>=0 and bev_hot_ice<2),
+bev_id int,
+bev_size int not null default 1 check(bev_size>=-1 and bev_size<3),
+bev_hot_ice int not null default 0 check(bev_hot_ice>=-1 and bev_hot_ice<2),
+bev_price int
 );
 
 create table tblSide
@@ -58,14 +59,8 @@ side_price int not null
 create table tblOrder_Side
 (
 order_id int constraint fk_order_id_tblorder_side foreign key (order_id) references tblOrder(order_id),
-side_id int constraint fk_side_id_tblorder_side foreign key (side_id) references tblSide(side_id),
-);
-
-create table tblSales
-(
-sales_date date primary key,
-sales_total int not null,
-sales_num int not null
+side_id int,
+side_price int
 );
 
 create table tblGoods
@@ -75,7 +70,22 @@ goods_name varchar(20) not null,
 goods_num int not null
 );
 
+create table tblSales
+(
+sales_date date,
+sales_total int not null,
+sales_num int not null
+);
 
+select * from tblOrder
+select * from tblSales
+
+insert into tblSales
+select order_date, SUM(order_price) as order_price, COUNT(order_id) as order_id from tblOrder where order_date = '2015-12-17'
+group by order_date
+
+UPDATE dbo.tblSales SET sales_date = order_date from tblOrder where order_date = '2015-12-17', sales_total = (SELECT SUM(order_price) as order_price from tblOrder where order_date = '2015-12-17'), sales_num = (SELECT COUNT(order_id) as order_id from tblOrder where order_date = '2015-12-17' 
+UPDATE dbo.tblSales SET sales_date = '2015-12-17', sales_total = 1, sales_num = 1 WHERE sales_date = '2015-12-17'
 select * from tblCustomer
 
 select * from tblBeverage;
@@ -138,31 +148,51 @@ ON o.order_id = @param;
 
 create view view_order
 as
-select o.order_id, bev_name, bev_size, bev_hot_ice, side_name, order_date, order_used_point, order_price, order_save_point, cus_id  from tblOrder o inner join (select ob.order_id, bev_name, bev_size, bev_hot_ice, side_name from  view_Order_Beverage ob inner join view_Order_Side os ON ob.order_id = os.order_id) obs
+select o.order_id, bev_name, bev_size, bev_hot_ice, side_name, order_date, order_used_point, order_price, order_save_point, order_date, cus_id  from tblOrder o inner join (select ob.order_id, bev_name, bev_size, bev_hot_ice, side_name from  view_Order_Beverage ob inner join view_Order_Side os ON ob.order_id = os.order_id) obs
 ON o.order_id = obs.order_id;
 
-select * from view_Order_Beverage;
-select * from view_order;
+DELETE FROM dbo.tblOrder WHERE order_id = 1
 
 select * from tblOrder
 
-insert into tblOrder
-(order_date, order_used_point, order_price, order_save_point, cus_id)
-values
-('20151216', 0, 5000, 500, 1)
-select @@IDENTITY
-
-insert into view_order
-(bev_name, bev_size, bev_hot_ice, side_name, order_date, order_used_point, order_price, order_save_point, cus_id)
-values
-('아메리카노', '미디움', 'hot', '-', '20151216', 0, 5000, 500, 1)
-
 select * from tblOrder_Beverage
-insert into tblOrder_Beverage
-(order_id)
-values
-(insert into tblOrder
-(order_date, order_used_point, order_price, order_save_point, cus_id)
-values
-('20151216', 0, 5000, 500, 1)
-select @@IDENTITY)
+
+select * from tblOrder_Side
+
+select * from view_order_Beverage
+
+select * from view_order_Side
+
+select ob.order_id, bev_name, bev_size, bev_hot_ice, side_name from  view_Order_Beverage ob inner join view_Order_Side os ON ob.order_id = os.order_id
+
+
+create view view_order
+as
+select o.order_id, bev_id, bev_size, bev_hot_ice, side_id, order_used_point, order_price, order_save_point, order_date, cus_id  from tblOrder o inner join (select ob.order_id, bev_id, bev_size, bev_hot_ice, side_id from  tblOrder_Beverage ob inner join tblOrder_Side os ON ob.order_id = os.order_id) obs
+ON o.order_id = obs.order_id
+group by o.order_id
+
+
+select ob.order_id, bev_id, bev_size, bev_hot_ice, side_id from  tblOrder_Beverage ob inner join tblOrder_Side os ON ob.order_id = os.order_id
+
+
+select * from view_order
+
+delete from tblOrder_Side
+
+update tblOrder_Side
+set order_id = 2;
+
+INSERT INTO dbo.tblOrder VALUES (1, '1993-12-01', 0, 1000, 100, 1)
+
+select * from tblOrder;
+
+update tblCustomer
+set cus_point = 10000
+where cus_id = 1;
+
+SELECT * FROM dbo.tblOrder WHERE m_order_id = 1
+
+UPDATE dbo.tblOrder SET order_date = '2012-11-22', order_used_point = 0, order_price = 0, order_save_point = 0, cus_id = 0 WHERE order_id = 4
+
+UPDATE dbo.tblOrder_Beverage SET bev_id = 1, bev_size = 1, bev_hot_ice = 1, bev_price = 0 WHERE order_id = 4

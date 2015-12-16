@@ -107,6 +107,9 @@
     <ClInclude Include="CustomerInsertDlg.h" />
     <ClInclude Include="CustomerModifyDlg.h" />
     <ClInclude Include="CustomerSelectDlg.h" />
+    <ClInclude Include="GoodsInsertDlg.h" />
+    <ClInclude Include="GoodsModifyDlg.h" />
+    <ClInclude Include="GoodsSelectDlg.h" />
     <ClInclude Include="HugCoffe.h" />
     <ClInclude Include="HugCoffeDoc.h" />
     <ClInclude Include="HugCoffeFormDlg.h" />
@@ -118,17 +121,30 @@
     <ClInclude Include="MenuSelectDlg.h" />
     <ClInclude Include="OrderCustomerSelectDlg.h" />
     <ClInclude Include="OrderInsertDlg.h" />
+    <ClInclude Include="OrderModifyDlg.h" />
+    <ClInclude Include="OrderSelectDlg.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SalesModifyDlg.h" />
+    <ClInclude Include="SalesSelectDlg.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="tblBeverage.h" />
     <ClInclude Include="tblCustomer.h" />
+    <ClInclude Include="tblGoods.h" />
+    <ClInclude Include="tblOrder.h" />
+    <ClInclude Include="tblOrder_Beverage.h" />
+    <ClInclude Include="tblOrder_Side.h" />
+    <ClInclude Include="tblSales.h" />
     <ClInclude Include="tblSide.h" />
+    <ClInclude Include="view_order.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CustomerInsertDlg.cpp" />
     <ClCompile Include="CustomerModifyDlg.cpp" />
     <ClCompile Include="CustomerSelectDlg.cpp" />
+    <ClCompile Include="GoodsInsertDlg.cpp" />
+    <ClCompile Include="GoodsModifyDlg.cpp" />
+    <ClCompile Include="GoodsSelectDlg.cpp" />
     <ClCompile Include="HugCoffe.cpp" />
     <ClCompile Include="HugCoffeDoc.cpp" />
     <ClCompile Include="HugCoffeFormDlg.cpp" />
@@ -140,6 +156,10 @@
     <ClCompile Include="MenuSelectDlg.cpp" />
     <ClCompile Include="OrderCustomerSelectDlg.cpp" />
     <ClCompile Include="OrderInsertDlg.cpp" />
+    <ClCompile Include="OrderModifyDlg.cpp" />
+    <ClCompile Include="OrderSelectDlg.cpp" />
+    <ClCompile Include="SalesModifyDlg.cpp" />
+    <ClCompile Include="SalesSelectDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

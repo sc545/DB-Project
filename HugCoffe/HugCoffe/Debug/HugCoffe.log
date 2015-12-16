@@ -1,22 +1,16 @@
-﻿빌드 시작: 2015-12-15 오후 11:57:59
+﻿빌드 시작: 2015-12-17 오전 5:42:21
      1>2 노드의 "D:\DB Project\HugCoffe\HugCoffe\HugCoffe.vcxproj" 프로젝트(Build 대상)입니다.
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\HugCoffe.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt HugCoffeView.cpp OrderInsertDlg.cpp
-         OrderInsertDlg.cpp
-     1>d:\db project\hugcoffe\hugcoffe\orderinsertdlg.cpp(228): warning C4244: '=' : 'long double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>d:\db project\hugcoffe\hugcoffe\orderinsertdlg.cpp(373): warning C4244: '=' : 'long double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>d:\db project\hugcoffe\hugcoffe\orderinsertdlg.cpp(408): warning C4244: '=' : 'long double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>d:\db project\hugcoffe\hugcoffe\orderinsertdlg.cpp(418): warning C4244: '=' : 'long double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>d:\db project\hugcoffe\hugcoffe\orderinsertdlg.cpp(438): warning C4244: '=' : 'long double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>d:\db project\hugcoffe\hugcoffe\orderinsertdlg.cpp(447): warning C4244: '=' : 'long double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-     1>d:\db project\hugcoffe\hugcoffe\orderinsertdlg.cpp(473): warning C4244: '=' : 'long double'에서 'LONG'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-         HugCoffeView.cpp
-         코드를 생성하고 있습니다...
+         C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\HugCoffe.pch" /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt HugCoffe.cpp
+         HugCoffe.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\DB Project\HugCoffe\Debug\HugCoffe.exe" /INCREMENTAL /NOLOGO msdasc.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"D:\DB Project\HugCoffe\Debug\HugCoffe.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\DB Project\HugCoffe\Debug\HugCoffe.lib" /MACHINE:X86 Debug\HugCoffe.res
          Debug\CustomerInsertDlg.obj
          Debug\CustomerModifyDlg.obj
          Debug\CustomerSelectDlg.obj
+         Debug\GoodsInsertDlg.obj
+         Debug\GoodsModifyDlg.obj
+         Debug\GoodsSelectDlg.obj
          Debug\HugCoffe.obj
          Debug\HugCoffeDoc.obj
          Debug\HugCoffeFormDlg.obj
@@ -28,10 +22,14 @@
          Debug\MenuSelectDlg.obj
          Debug\OrderCustomerSelectDlg.obj
          Debug\OrderInsertDlg.obj
+         Debug\OrderModifyDlg.obj
+         Debug\OrderSelectDlg.obj
+         Debug\SalesModifyDlg.obj
+         Debug\SalesSelectDlg.obj
          Debug\stdafx.obj
          HugCoffe.vcxproj -> D:\DB Project\HugCoffe\Debug\HugCoffe.exe
      1>"D:\DB Project\HugCoffe\HugCoffe\HugCoffe.vcxproj" 프로젝트를 빌드했습니다(Build 대상).
 
 빌드했습니다.
 
-경과 시간: 00:00:01.79
+경과 시간: 00:00:01.24
